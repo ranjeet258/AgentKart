@@ -36,18 +36,60 @@ Rather than deploying isolated chatbots, AgentKart enables the deployment of a *
 
 ## 🏗️ Architecture
 
-AgentKart utilizes a modular microservices architecture to separate standard business logic from computationally heavy AI operations.
+AgentKart utilizes a modular microservices architecture to separate standard business logic from computationally heavy AI operations, vector search, and long-running durable executions.
 
-| Service | Technology | Port | Description |
-| :--- | :--- | :--- | :--- |
-| **Web Frontend** | Next.js 14, TailwindCSS, React | `3000` | The user-facing dashboard for hiring agents and viewing the live Org Chart. |
-| **Core API** | NestJS, TypeScript, Prisma | `3001` | Handles traditional CRUD (Users, Orgs, Billing) and interacts with PostgreSQL. |
-| **AI Orchestration API** | FastAPI, Python 3.11, LangChain | `8000` | Handles LLM intent extraction, RAG pipelines, and agent-to-agent task routing. |
-| **Relational DB** | PostgreSQL 15 | `5433` | Primary source of truth for platform data (Orgs, Orders, Agents). |
-| **Vector DB** | Qdrant | `6333` | Stores high-dimensional embeddings for semantic task matching. |
-| **Graph DB** | Neo4j 5 | `7474` | Maps hierarchical agent relationships (e.g., CEO → CTO) and data lineage. |
-| **Cache & Queue** | Redis 7 | `6379` | Handles rate limiting, temporal queueing, and fast-access session states. |
-| **Observability** | Prometheus + Grafana | `9090`, `3002` | Distributed tracing, metrics, and health monitoring for all containers. |
+```mermaid
+graph TD
+    %% Define Styles
+    classDef frontend fill:#000000,stroke:#333,stroke-width:2px,color:#fff
+    classDef coreapi fill:#E0234E,stroke:#333,stroke-width:2px,color:#fff
+    classDef aiapi fill:#009688,stroke:#333,stroke-width:2px,color:#fff
+    classDef db fill:#336791,stroke:#333,stroke-width:2px,color:#fff
+    classDef graph fill:#018BFF,stroke:#333,stroke-width:2px,color:#fff
+    classDef vector fill:#F26B8A,stroke:#333,stroke-width:2px,color:#fff
+    classDef temporal fill:#1E1E1E,stroke:#333,stroke-width:2px,color:#fff
+
+    %% Nodes
+    User(("🧑‍💻 User"))
+    UI["💻 Next.js Frontend\n(React, Tailwind, Port 3000)"]:::frontend
+    CoreAPI["⚙️ NestJS Core API\n(TypeScript, Prisma, Port 3001)"]:::coreapi
+    AIAPI["🧠 FastAPI Engine\n(Python, BAAI/bge-small, Port 8000)"]:::aiapi
+    
+    Postgres[("🐘 PostgreSQL\n(Port 5433)")]:::db
+    Neo4j[("🕸️ Neo4j Graph\n(Port 7687)")]:::graph
+    Qdrant[("🎯 Qdrant Vector DB\n(Port 6333)")]:::vector
+    Temporal["⏳ Temporal.io\n(Durable Execution, Port 7233)"]:::temporal
+    Workers["🛠️ Python Workers\n(Activities & Tools)"]:::aiapi
+
+    %% Flows
+    User -->|Views Org Chart / Clicks Agents| UI
+    User -->|Sends Tasks via Dashboard| UI
+    
+    UI -->|CRUD / Billing / Profiles| CoreAPI
+    UI -->|Semantic Search & Chat API| AIAPI
+    
+    CoreAPI -->|Reads/Writes Tenants| Postgres
+    
+    AIAPI -->|Finds Agent Routing Path| Neo4j
+    AIAPI -->|RAG Knowledge Retrieval| Qdrant
+    AIAPI -->|Triggers Long-Running Goals| Temporal
+    
+    Temporal -->|Dispatches Sub-Tasks| Workers
+    Workers -->|Executes Sub-Agent Logic| Workers
+```
+
+### 1. The Presentation Layer (Next.js)
+The frontend serves the **Marketplace UI** (where users view the interactive Org Chart and hire agents) and the **Agent Dashboard Workspace**, which acts as the override console. The dashboard uses dynamic routing to proxy real-time chat requests to the backend AI engine.
+
+### 2. The Semantic & RAG Engine (FastAPI)
+The AI engine utilizes **FastEmbed** locally to avoid expensive OpenAI calls. It handles two major flows:
+- **Semantic Matching (`/api/v1/requirements`)**: Embeds user natural language to find the perfect agent for the job.
+- **RAG Chat (`/api/v1/agent/chat`)**: When talking to an agent in the dashboard, this layer retrieves indexed knowledge (e.g. Policies, FAQs) from **Qdrant** and responds accurately.
+
+### 3. The Orchestration Layer (Temporal.io & Neo4j)
+When a high-level goal is submitted to the **CEO Agent**:
+- It queries **Neo4j** to verify hierarchical access and find its subordinate domain agents (Support, Marketing, Sales).
+- It initiates a **Temporal Workflow**, ensuring the task executes durably across all sub-agents, handling failures, timeouts, and API rate-limits automatically.
 
 ---
 
