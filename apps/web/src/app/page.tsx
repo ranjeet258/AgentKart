@@ -5,35 +5,27 @@ import { AgentCard } from '@/components/marketplace/AgentCard';
 const featuredAgents = [
   {
     id: '1',
-    name: 'SupportGenie AI',
-    description: 'Fully autonomous L1 customer support agent. Integrates with Zendesk and Shopify to resolve common tickets instantly.',
+    name: 'Customer Support Agent',
+    description: 'Fully autonomous L1 support agent. Integrates with Zendesk to resolve common tickets instantly 24/7.',
     category: 'Customer Support',
-    rating: 4.8,
+    rating: 4.9,
     price: '$99/mo'
   },
   {
     id: '2',
-    name: 'DataCruncher Pro',
-    description: 'Connects to your data warehouse and answers natural language questions with verified SQL and charts.',
-    category: 'Data Analysis',
-    rating: 4.9,
-    price: '$0.02/task'
-  },
-  {
-    id: '3',
-    name: 'Outbound SDR',
+    name: 'Sales Agent',
     description: 'Researches prospects, writes highly personalized cold emails, and manages follow-ups in Salesforce.',
     category: 'Sales',
-    rating: 4.5,
+    rating: 4.8,
     price: '$250/mo'
   },
   {
-    id: '4',
-    name: 'CodeReviewer AI',
-    description: 'Automatically reviews pull requests for security vulnerabilities, style violations, and performance bottlenecks.',
-    category: 'Engineering',
+    id: '3',
+    name: 'Marketing Agent',
+    description: 'Generates SEO-optimized content, schedules social media posts, and analyzes ad campaign performance.',
+    category: 'Marketing',
     rating: 4.7,
-    price: '$49/mo'
+    price: '$150/mo'
   }
 ];
 
@@ -75,7 +67,7 @@ export default function Home() {
           <p className="text-gray-500 max-w-2xl mx-auto">Ready-to-deploy agents that integrate securely into your existing tools and workflows.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredAgents.map((agent) => (
             <AgentCard key={agent.id} agent={agent} />
           ))}
