@@ -1,32 +1,12 @@
 import Link from 'next/link';
 import { OrgChart } from '@/components/marketplace/OrgChart';
 import { AgentCard } from '@/components/marketplace/AgentCard';
+import { agentsData } from '@/lib/agentsData';
 
 const featuredAgents = [
-  {
-    id: '1',
-    name: 'Customer Support Agent',
-    description: 'Fully autonomous L1 support agent. Integrates with Zendesk to resolve common tickets instantly 24/7.',
-    category: 'Customer Support',
-    rating: 4.9,
-    price: '$99/mo'
-  },
-  {
-    id: '2',
-    name: 'Sales Agent',
-    description: 'Researches prospects, writes highly personalized cold emails, and manages follow-ups in Salesforce.',
-    category: 'Sales',
-    rating: 4.8,
-    price: '$250/mo'
-  },
-  {
-    id: '3',
-    name: 'Marketing Agent',
-    description: 'Generates SEO-optimized content, schedules social media posts, and analyzes ad campaign performance.',
-    category: 'Marketing',
-    rating: 4.7,
-    price: '$150/mo'
-  }
+  agentsData['1'],
+  agentsData['2'],
+  agentsData['3'],
 ];
 
 export default function Home() {

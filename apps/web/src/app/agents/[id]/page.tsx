@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, use } from 'react';
 import Link from 'next/link';
 import { agentsData } from '@/lib/agentsData';
 
-export default function AgentProfilePage({ params }: { params: { id: string } }) {
+export default function AgentProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const [loading, setLoading] = useState(false);
   const [trialStarted, setTrialStarted] = useState(false);
   
-  const agent = agentsData[params.id];
+  // Unwrap the params promise (Next.js 15+ requirement)
+  const resolvedParams = use(params);
+  const agent = agentsData[resolvedParams.id];
 
   if (!agent) {
     return (
