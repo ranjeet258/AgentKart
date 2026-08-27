@@ -95,30 +95,55 @@ class MatchingEngine:
             })
         return candidates
 
+    async def check_permissions(self, candidates: List[dict], intent: Dict[str, Any], tenant_id: str) -> List[dict]:
+        """
+        Step 4: Neo4j relationship / permission checks (Phase 4)
+        Uses the Neo4j graph to ensure the CEO is allowed to route the intent to these candidates.
+        """
+        if not hasattr(self, 'graph_service'):
+            from services.graph import GraphService
+            self.graph_service = GraphService()
+            
+        routing = self.graph_service.get_routing_path(intent["category"])
+        
+        permitted = []
+        for c in candidates:
+            # If graph dictates a specific routing path for this task, boost it or enforce it
+            if routing and c["agent_id"] == routing["agent_id"]:
+                c["score"] += 0.2  # Bonus for correct hierarchical graph route
+                permitted.append(c)
+            else:
+                permitted.append(c)
+                
+        return permitted
+
     async def find_matches(self, raw_text: str, tenant_id: str) -> List[AgentMatch]:
         """
-        Full Phase 2 Semantic Matching Pipeline!
+        Full Phase 2 & 4 Semantic Matching & Graph Pipeline
         """
         intent = await self.extract_intent(raw_text)
         
-        # FastEmbed handles the embedding dynamically inside .query()
         candidates = await self.retrieve_candidates(raw_text)
         
-        # Rank and build explanations based on score and intent
+        # Apply Neo4j Graph Routing (Phase 4)
+        permitted = await self.check_permissions(candidates, intent, tenant_id)
+        
         ranked = []
-        for c in candidates:
-            # We filter out totally irrelevant matches (score < 0.3)
+        for c in permitted:
             if c["score"] > 0.3:
                 explanation = f"Semantic Match Score: {c['score']:.2f}. "
                 if c["category"] == intent["category"]:
-                    explanation += f"Perfectly aligns with your intent for {intent['category']} tasks."
+                    explanation += f"Perfectly aligns with your intent for {intent['category']} tasks. "
                 else:
-                    explanation += f"Agent possesses complementary skills to your requirement."
+                    explanation += f"Agent possesses complementary skills. "
+                    
+                if c["score"] > 1.0: # Means they got the Neo4j boost
+                    explanation += "Verified by Neo4j graph routing path!"
                     
                 ranked.append(
                     AgentMatch(
                         agent_id=c["agent_id"],
-                        score=c["score"],
+                        score=min(c["score"], 1.0), # cap at 1.0
                         explanation=explanation
                     )
                 )

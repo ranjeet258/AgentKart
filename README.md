@@ -93,7 +93,21 @@ npm install
 npm run dev
 ```
 
-Navigate to [http://localhost:3000](http://localhost:3000) to view your live AI workforce platform!
+### 5. Run the CEO Orchestration Workflow (Phase 3 & 4)
+The AI engine uses Temporal.io and Neo4j to manage the hierarchical execution of agents.
+1. Download and start the local [Temporal CLI](https://docs.temporal.io/cli/#install):
+```bash
+temporal server start-dev
+```
+2. Start the AI Orchestrator Worker (in `apps/ai-api`):
+```bash
+python -m temporal.worker
+```
+3. Trigger a Multi-Agent CEO Task (in another terminal):
+```bash
+python -m temporal.run_workflow
+```
+This triggers the CEO agent to interact with Neo4j, find its subordinate agents, and execute the Marketing, Sales, and Support agents durably!
 
 ---
 
@@ -101,9 +115,9 @@ Navigate to [http://localhost:3000](http://localhost:3000) to view your live AI 
 
 - [x] **Phase 0: Foundation**: Monorepo scaffolding, Terraform stubs, Prisma Schema, Docker Compose.
 - [x] **Phase 1: Marketplace UI**: 2-Column Hero, Interactive Org Chart, Agent Profiles, Trial Provisioning UI.
-- [ ] **Phase 2: AI Matching Engine**: Connect FastAPI to LangChain and Qdrant for semantic agent retrieval.
-- [ ] **Phase 3: Orchestration**: Implement Temporal.io for durable, long-running agent task executions.
-- [ ] **Phase 4: Multi-Agent Workflows**: Enable graph-based execution where the CEO Agent breaks down requirements into sub-tasks for domain agents via Neo4j.
+- [x] **Phase 2: AI Matching Engine**: Connect FastAPI to FastEmbed and Qdrant for semantic agent retrieval.
+- [x] **Phase 3: Orchestration**: Implement Temporal.io for durable, long-running agent task executions.
+- [x] **Phase 4: Multi-Agent Workflows**: Enable graph-based execution where the CEO Agent breaks down requirements into sub-tasks for domain agents via Neo4j.
 
 ---
 
