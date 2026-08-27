@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/AgentKart/assets/main/logo.png" alt="AgentKart Logo" width="200" height="auto" />
-  <h1>AgentKart: Autonomous AI Workforce Platform</h1>
+  <h1>AgentKart: Autonomous AI Workforce Platform (ongoing)</h1>
   
   <p>
     <strong>A Production-Ready Orchestration & Hiring Platform for AI Agents</strong>
