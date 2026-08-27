@@ -11,49 +11,27 @@ interface OrgNode {
 
 const workforceData: OrgNode = {
   id: 'ceo-1',
-  name: 'Aarav (CEO)',
-  role: 'Strategic Planner',
+  name: 'Aarav (CEO Routing Agent)',
+  role: 'Task Orchestration & Planning',
   avatarColor: 'bg-indigo-600',
   children: [
     {
-      id: 'cto-1',
-      name: 'Rohan (CTO)',
-      role: 'Architecture',
-      avatarColor: 'bg-blue-600',
-      children: [
-        {
-          id: 'dev-1',
-          name: 'Aditi',
-          role: 'Frontend Dev',
-          avatarColor: 'bg-cyan-500',
-        },
-        {
-          id: 'dev-2',
-          name: 'Karan',
-          role: 'Backend Dev',
-          avatarColor: 'bg-sky-500',
-        }
-      ]
+      id: '1',
+      name: 'Aditi (Support)',
+      role: 'L1 Ticket Resolution',
+      avatarColor: 'bg-cyan-500',
     },
     {
-      id: 'cmo-1',
-      name: 'Priya (CMO)',
-      role: 'Marketing Lead',
-      avatarColor: 'bg-rose-600',
-      children: [
-        {
-          id: 'mkt-1',
-          name: 'Neha',
-          role: 'Content Writer',
-          avatarColor: 'bg-pink-500',
-        },
-        {
-          id: 'mkt-2',
-          name: 'Rahul',
-          role: 'SEO Specialist',
-          avatarColor: 'bg-fuchsia-500',
-        }
-      ]
+      id: '2',
+      name: 'Rahul (Sales)',
+      role: 'Outbound SDR',
+      avatarColor: 'bg-emerald-500',
+    },
+    {
+      id: '3',
+      name: 'Neha (Marketing)',
+      role: 'Content & Ads',
+      avatarColor: 'bg-rose-500',
     }
   ]
 };
