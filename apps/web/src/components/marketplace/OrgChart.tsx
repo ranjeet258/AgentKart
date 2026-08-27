@@ -11,47 +11,61 @@ interface OrgNode {
 
 const workforceData: OrgNode = {
   id: 'ceo-1',
-  name: 'Alex (CEO Agent)',
-  role: 'Strategic Planner & Task Router',
+  name: 'Aarav (CEO)',
+  role: 'Strategic Planner',
   avatarColor: 'bg-indigo-600',
   children: [
     {
       id: 'cto-1',
-      name: 'Sam (CTO Agent)',
-      role: 'Architecture & Code Review',
+      name: 'Rohan (CTO)',
+      role: 'Architecture',
       avatarColor: 'bg-blue-600',
       children: [
         {
           id: 'dev-1',
-          name: 'Jordan',
-          role: 'Junior Frontend Dev',
+          name: 'Aditi',
+          role: 'Frontend Dev',
           avatarColor: 'bg-cyan-500',
         },
         {
           id: 'dev-2',
-          name: 'Taylor',
-          role: 'Junior Backend Dev',
+          name: 'Karan',
+          role: 'Backend Dev',
           avatarColor: 'bg-sky-500',
         }
       ]
     },
     {
-      id: 'hr-1',
-      name: 'Morgan (HR Lead Agent)',
-      role: 'Recruiting & Onboarding',
+      id: 'cmo-1',
+      name: 'Priya (CMO)',
+      role: 'Marketing Lead',
       avatarColor: 'bg-rose-600',
       children: [
         {
-          id: 'hr-worker-1',
-          name: 'Casey',
-          role: 'Candidate Sourcing',
+          id: 'mkt-1',
+          name: 'Neha',
+          role: 'Content Writer',
           avatarColor: 'bg-pink-500',
         },
         {
-          id: 'hr-worker-2',
-          name: 'Riley',
-          role: 'Payroll Processing',
+          id: 'mkt-2',
+          name: 'Rahul',
+          role: 'SEO Specialist',
           avatarColor: 'bg-fuchsia-500',
+        }
+      ]
+    },
+    {
+      id: 'coo-1',
+      name: 'Vikram (COO)',
+      role: 'Operations Lead',
+      avatarColor: 'bg-emerald-600',
+      children: [
+        {
+          id: 'ops-1',
+          name: 'Ananya',
+          role: 'Data Analyst',
+          avatarColor: 'bg-teal-500',
         }
       ]
     }
