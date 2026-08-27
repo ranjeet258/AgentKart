@@ -54,20 +54,6 @@ const workforceData: OrgNode = {
           avatarColor: 'bg-fuchsia-500',
         }
       ]
-    },
-    {
-      id: 'coo-1',
-      name: 'Vikram (COO)',
-      role: 'Operations Lead',
-      avatarColor: 'bg-emerald-600',
-      children: [
-        {
-          id: 'ops-1',
-          name: 'Ananya',
-          role: 'Data Analyst',
-          avatarColor: 'bg-teal-500',
-        }
-      ]
     }
   ]
 };
@@ -111,11 +97,11 @@ function OrgNodeCard({ node }: { node: OrgNode }) {
 
 export function OrgChart() {
   return (
-    <div className="w-full flex justify-center items-start py-8 relative overflow-hidden min-h-[300px]">
+    <div className="w-full flex justify-center items-start py-8 relative min-h-[300px]">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-b-2xl pointer-events-none"></div>
       
-      {/* Aggressive scaling wrapper to prevent scroll at any viewport */}
-      <div className="origin-top scale-[0.6] sm:scale-[0.7] md:scale-75 lg:scale-[0.65] xl:scale-90 transition-transform duration-300 flex justify-center w-full">
+      {/* Container with zoom/scale to fit */}
+      <div className="origin-top scale-75 sm:scale-90 transition-transform duration-300">
         <OrgNodeCard node={workforceData} />
       </div>
     </div>
