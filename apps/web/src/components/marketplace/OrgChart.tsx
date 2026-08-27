@@ -75,29 +75,29 @@ const workforceData: OrgNode = {
 function OrgNodeCard({ node }: { node: OrgNode }) {
   return (
     <div className="flex flex-col items-center">
-      <Link href={`/agents/${node.id}`} className="relative z-10 bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition w-48 text-center cursor-pointer hover:border-blue-400 group">
-        <div className={`w-12 h-12 mx-auto rounded-full text-white flex items-center justify-center font-bold text-xl mb-3 shadow-inner ${node.avatarColor}`}>
+      <Link href={`/agents/${node.id}`} className="relative z-10 bg-white/70 backdrop-blur-lg border border-gray-100 rounded-2xl p-3 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 w-32 md:w-36 text-center cursor-pointer hover:border-blue-300 group hover:-translate-y-1">
+        <div className={`w-10 h-10 mx-auto rounded-full text-white flex items-center justify-center font-bold text-lg mb-2 shadow-inner ${node.avatarColor} group-hover:scale-110 transition-transform duration-300`}>
           {node.name.charAt(0)}
         </div>
-        <h3 className="font-bold text-gray-900 text-sm group-hover:text-blue-600 transition">{node.name}</h3>
-        <p className="text-xs text-gray-500 mt-1">{node.role}</p>
+        <h3 className="font-bold text-gray-800 text-xs group-hover:text-blue-600 transition-colors">{node.name}</h3>
+        <p className="text-[10px] text-gray-500 mt-1 leading-tight">{node.role}</p>
       </Link>
       
       {node.children && node.children.length > 0 && (
         <>
           {/* Vertical line down from parent */}
-          <div className="w-px h-8 bg-gray-300"></div>
+          <div className="w-px h-6 bg-gradient-to-b from-gray-200 to-gray-300"></div>
           
           {/* Horizontal connecting line container */}
           <div className="relative flex justify-center w-full">
             {/* The horizontal line that spans the children */}
-            <div className="absolute top-0 h-px bg-gray-300" style={{ width: 'calc(100% - 12rem)' }}></div>
+            <div className="absolute top-0 h-px bg-gray-300" style={{ width: 'calc(100% - 8rem)' }}></div>
             
-            <div className="flex gap-12 pt-8 relative">
+            <div className="flex gap-4 md:gap-8 pt-6 relative">
               {node.children.map((child, index) => (
                 <div key={child.id} className="relative">
                   {/* Vertical line up from child */}
-                  <div className="absolute -top-8 left-1/2 w-px h-8 bg-gray-300 -translate-x-1/2"></div>
+                  <div className="absolute -top-6 left-1/2 w-px h-6 bg-gradient-to-t from-gray-200 to-gray-300 -translate-x-1/2"></div>
                   <OrgNodeCard node={child} />
                 </div>
               ))}
@@ -111,8 +111,9 @@ function OrgNodeCard({ node }: { node: OrgNode }) {
 
 export function OrgChart() {
   return (
-    <div className="w-full overflow-x-auto py-12 flex justify-center">
-      <div className="min-w-max pb-8">
+    <div className="w-full flex justify-center items-center py-8 relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-b-2xl pointer-events-none"></div>
+      <div className="transform scale-90 sm:scale-100 transform-origin-top">
         <OrgNodeCard node={workforceData} />
       </div>
     </div>
