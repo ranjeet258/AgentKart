@@ -1,0 +1,8 @@
+{
+  "name": "agentkart",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

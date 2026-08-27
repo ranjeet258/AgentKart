@@ -1,0 +1,187 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                  String               @id @default(uuid())
+  email               String               @unique
+  identityProviderId  String?
+  status              String               @default("ACTIVE")
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  organizationMembers OrganizationMember[]
+}
+
+model Organization {
+  id           String               @id @default(uuid())
+  name         String
+  plan         String               @default("FREE")
+  status       String               @default("ACTIVE")
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  members      OrganizationMember[]
+  requirements Requirement[]
+  executions   Execution[]
+}
+
+model OrganizationMember {
+  organizationId String
+  userId         String
+  role           String               @default("MEMBER")
+  status         String               @default("ACTIVE")
+  organization   Organization         @relation(fields: [organizationId], references: [id])
+  user           User                 @relation(fields: [userId], references: [id])
+
+  @@id([organizationId, userId])
+}
+
+model Agent {
+  id               String         @id @default(uuid())
+  providerOrgId    String
+  name             String
+  description      String?
+  category         String?
+  status           String         @default("DRAFT")
+  currentVersionId String?
+  versions         AgentVersion[]
+  matches          Match[]
+  orders           Order[]
+  executions       Execution[]
+}
+
+model AgentVersion {
+  id             String       @id @default(uuid())
+  agentId        String
+  version        String
+  runtimeSpec    Json?
+  skillSpec      Json?
+  pricingRef     String?
+  securityState  String       @default("PENDING")
+  agent          Agent        @relation(fields: [agentId], references: [id])
+  agentSkills    AgentSkill[]
+  agentTools     AgentTool[]
+}
+
+model Skill {
+  id          String       @id @default(uuid())
+  name        String
+  taxonomyId  String?
+  metadata    Json?
+  agentSkills AgentSkill[]
+}
+
+model AgentSkill {
+  id           String       @id @default(uuid())
+  agentVersionId String
+  skillId      String
+  proficiency  Float?
+  evidence     String?
+  agentVersion AgentVersion @relation(fields: [agentVersionId], references: [id])
+  skill        Skill        @relation(fields: [skillId], references: [id])
+}
+
+model Tool {
+  id            String      @id @default(uuid())
+  provider      String
+  capability    String
+  securityClass String
+  agentTools    AgentTool[]
+}
+
+model AgentTool {
+  id             String       @id @default(uuid())
+  agentVersionId String
+  toolId         String
+  permissionScope String?
+  agentVersion   AgentVersion @relation(fields: [agentVersionId], references: [id])
+  tool           Tool         @relation(fields: [toolId], references: [id])
+}
+
+model Requirement {
+  id               String       @id @default(uuid())
+  organizationId   String
+  rawText          String
+  structuredIntent Json?
+  embeddingRef     String?
+  organization     Organization @relation(fields: [organizationId], references: [id])
+  matches          Match[]
+}
+
+model Match {
+  id             String      @id @default(uuid())
+  requirementId  String
+  agentId        String
+  score          Float
+  explanationRef String?
+  createdAt      DateTime    @default(now())
+  requirement    Requirement @relation(fields: [requirementId], references: [id])
+  agent          Agent       @relation(fields: [agentId], references: [id])
+}
+
+model Order {
+  id              String         @id @default(uuid())
+  buyerOrgId      String
+  agentId         String
+  status          String
+  commercialTerms Json?
+  agent           Agent          @relation(fields: [agentId], references: [id])
+  subscriptions   Subscription[]
+  reviews         Review[]
+}
+
+model Subscription {
+  id      String @id @default(uuid())
+  orderId String
+  plan    String
+  status  String
+  limits  Json?
+  order   Order  @relation(fields: [orderId], references: [id])
+}
+
+model Execution {
+  id             String        @id @default(uuid())
+  organizationId String
+  agentId        String
+  workflowId     String?
+  status         String
+  cost           Float?
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+  agent          Agent         @relation(fields: [agentId], references: [id])
+  usageRecords   UsageRecord[]
+}
+
+model UsageRecord {
+  id          String    @id @default(uuid())
+  executionId String
+  metric      String
+  quantity    Float
+  unitPrice   Float
+  execution   Execution @relation(fields: [executionId], references: [id])
+}
+
+model Review {
+  id              String @id @default(uuid())
+  orderId         String
+  reviewerId      String
+  agentId         String
+  rating          Int
+  text            String?
+  moderationState String @default("PENDING")
+  order           Order  @relation(fields: [orderId], references: [id])
+}
+
+model AuditEvent {
+  id           String   @id @default(uuid())
+  tenantId     String
+  actorId      String
+  action       String
+  resourceType String
+  resourceId   String
+  metadata     Json?
+  timestamp    DateTime @default(now())
+}
