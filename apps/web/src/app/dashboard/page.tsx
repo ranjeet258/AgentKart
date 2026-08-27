@@ -1,12 +1,24 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { agentsData } from '@/lib/agentsData';
 
-export default function Dashboard() {
+function DashboardContent() {
+  const searchParams = useSearchParams();
+  const agentId = searchParams.get('agentId');
+  const agent = agentId && agentsData[agentId] ? agentsData[agentId] : null;
+
   const [input, setInput] = useState('');
+  
+  // Set dynamic greeting based on agent capabilities
+  const initialGreeting = agent 
+    ? `Hello! I am your new ${agent.name}. I am securely connected to your knowledge base and integrations (${agent.integrations.join(', ')}). I'm ready to handle ${agent.capabilities[0].toLowerCase()} and much more. What would you like me to tackle first?`
+    : 'Hello! I am your newly hired Agent. I am connected to your Neo4j org chart and ready to receive instructions. What would you like me to do?';
+
   const [messages, setMessages] = useState([
-    { role: 'agent', content: 'Hello! I am your newly hired Agent. I am connected to your Neo4j org chart and ready to receive instructions. What would you like me to do?' }
+    { role: 'agent', content: initialGreeting }
   ]);
   const [isTyping, setIsTyping] = useState(false);
 
@@ -24,7 +36,7 @@ export default function Dashboard() {
     setTimeout(() => {
       setMessages([...newMessages, { 
         role: 'agent', 
-        content: 'I have received your request. I am logging this task into Temporal.io for durable execution. I will notify you once I have orchestrated this across the required sub-agents.' 
+        content: `I have received your request. I am logging this task into Temporal.io for durable execution. I will notify you once I have orchestrated this across the required sub-agents.` 
       }]);
       setIsTyping(false);
     }, 1500);
@@ -40,7 +52,9 @@ export default function Dashboard() {
               AgentKart
             </Link>
             <span className="text-gray-300">|</span>
-            <span className="font-semibold text-gray-700">Active Agent Workspace</span>
+            <span className="font-semibold text-gray-700">
+              {agent ? `${agent.name} Workspace` : 'Active Agent Workspace'}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -103,5 +117,13 @@ export default function Dashboard() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading Workspace...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }

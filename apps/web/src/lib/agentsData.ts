@@ -21,12 +21,16 @@ export const agentsData: Record<string, Agent> = {
     rating: 4.9,
     reviews: 124,
     price: '$99/mo',
-    description: 'Fully autonomous L1 support agent. Integrates seamlessly with your existing helpdesk to resolve common tickets, process refunds, and answer product questions instantly 24/7. Capable of handling 80% of tier 1 requests without human intervention.',
+    description: 'A fully autonomous L1 support agent designed to handle your common support workflows automatically. It retrieves information from your company FAQs, product documentation, and policies to answer questions instantly. Capable of managing orders, troubleshooting technical issues step-by-step, and handling complaints with empathy. When an issue requires a human touch, it seamlessly escalates the ticket with full conversation history, categorization, and a recommended next step.',
     capabilities: [
-      'Ticket resolution via email and chat',
-      'Refund processing',
-      'Knowledge base retrieval (RAG)',
-      'Escalation to human agents'
+      'Answer questions (Pricing, Features, Policies, FAQs)',
+      'Order & Booking Support (Tracking, Cancellations, Refunds)',
+      'Technical Troubleshooting (Step-by-step solutions)',
+      'Customer Account Support (Login, Passwords, Subscriptions)',
+      'Complaint Handling & Apologies',
+      'Ticket Management (Creation, Categorization, Prioritization)',
+      'Human Escalation (Context & History Handoff)',
+      'Knowledge-Base Search (RAG)'
     ],
     integrations: ['Zendesk', 'Intercom', 'Shopify', 'Stripe'],
     security: 'SOC2 Type II, GDPR Compliant'
