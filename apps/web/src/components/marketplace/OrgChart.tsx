@@ -111,9 +111,11 @@ function OrgNodeCard({ node }: { node: OrgNode }) {
 
 export function OrgChart() {
   return (
-    <div className="w-full flex justify-center items-center py-8 relative">
+    <div className="w-full flex justify-center items-start py-8 relative overflow-hidden min-h-[300px]">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-b-2xl pointer-events-none"></div>
-      <div className="transform scale-90 sm:scale-100 transform-origin-top">
+      
+      {/* Aggressive scaling wrapper to prevent scroll at any viewport */}
+      <div className="origin-top scale-[0.6] sm:scale-[0.7] md:scale-75 lg:scale-[0.65] xl:scale-90 transition-transform duration-300 flex justify-center w-full">
         <OrgNodeCard node={workforceData} />
       </div>
     </div>

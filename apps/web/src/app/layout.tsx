@@ -25,10 +25,7 @@ export default function RootLayout({
             </Link>
             <div className="flex gap-6 items-center">
               <Link href="/marketplace" className="text-sm font-medium text-gray-700 hover:text-blue-600 transition">
-                Marketplace
-              </Link>
-              <Link href="/provider/onboarding" className="text-sm font-medium text-blue-600 bg-blue-50 px-4 py-2 rounded-md hover:bg-blue-100 transition">
-                List an Agent
+                Our Agents
               </Link>
             </div>
           </div>

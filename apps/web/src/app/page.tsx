@@ -39,33 +39,32 @@ const featuredAgents = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col">
+    <main className="min-h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Hero Section - 2 Columns */}
       <section className="max-w-7xl mx-auto px-6 py-12 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="flex flex-col items-start text-left">
+        <div className="flex flex-col items-start text-left z-10">
           <h1 className="text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 mb-5 leading-tight">
             Your Autonomous AI Workforce
           </h1>
           <p className="text-lg text-gray-600 mb-8 max-w-xl leading-relaxed">
-            Discover, hire, and manage AI agents that work alongside your team. Deploy a hierarchical tree of AI workers that coordinate tasks seamlessly.
+            Deploy an entire agency with a single click. Our specialized AI agents work alongside your team and coordinate tasks seamlessly.
           </p>
           
           <div className="flex gap-4">
             <Link href="/marketplace" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition shadow-sm">
-              Explore Marketplace
-            </Link>
-            <Link href="/provider/onboarding" className="bg-white border border-gray-300 hover:border-blue-600 hover:text-blue-600 text-gray-700 px-6 py-3 rounded-lg font-medium transition shadow-sm">
-              Train New Agent
+              View Our Agents
             </Link>
           </div>
         </div>
 
         {/* Tree Org Chart on the right */}
-        <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden w-full overflow-x-auto">
-          <div className="bg-slate-50 border-b border-gray-200 p-3 text-center">
+        <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden w-full flex flex-col justify-center items-center">
+          <div className="bg-slate-50 border-b border-gray-200 p-3 text-center w-full">
             <span className="font-semibold text-gray-700 text-sm">Live Team Structure: Interactive Preview</span>
           </div>
-          <OrgChart />
+          <div className="w-full relative flex justify-center overflow-hidden">
+            <OrgChart />
+          </div>
         </div>
       </section>
 
