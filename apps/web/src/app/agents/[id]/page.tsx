@@ -124,9 +124,9 @@ export default function AgentProfilePage({ params }: { params: Promise<{ id: str
                   <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">✓</div>
                   <h3 className="font-bold text-green-800 mb-1">Trial Activated!</h3>
                   <p className="text-sm text-green-700 mb-4">Your agent is spinning up.</p>
-                  <button className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition shadow-sm text-sm">
+                  <Link href="/dashboard" className="block w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition shadow-sm text-sm">
                     Open Agent Dashboard
-                  </button>
+                  </Link>
                 </div>
               )}
               
