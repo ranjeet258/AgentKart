@@ -18,22 +18,30 @@ function DashboardContent() {
   ]);
   const [isTyping, setIsTyping] = useState(false);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const newMessages = [...messages, { role: 'user', content: input }];
+    const userMessage = input;
+    const newMessages = [...messages, { role: 'user', content: userMessage }];
     setMessages(newMessages);
     setInput('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      setMessages([...newMessages, { 
-        role: 'agent', 
-        content: `I have received your request. I am logging this task into Temporal.io for durable execution. You can monitor the execution in the Active Tasks queue.` 
-      }]);
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage, agentId: agentId || '1' })
+      });
+      const data = await res.json();
+      
+      setMessages([...newMessages, { role: 'agent', content: data.response }]);
+    } catch (err) {
+      setMessages([...newMessages, { role: 'agent', content: "System error: Could not reach AI engine." }]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   return (
