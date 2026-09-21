@@ -11,7 +11,7 @@ class MatchingEngine:
     def __init__(self):
         print("Initializing Qdrant Matching Engine with FastEmbed...")
         # Connect to local Qdrant container
-        self.qdrant = QdrantClient("http://localhost:6333")
+        self.qdrant = QdrantClient("http://localhost:6335")
         self.collection_name = "agents"
         
         # Configure fastembed inside Qdrant (auto-downloads lightweight BAAI model)

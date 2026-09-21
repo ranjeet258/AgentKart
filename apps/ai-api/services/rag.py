@@ -7,7 +7,7 @@ class RAGService:
     def __init__(self):
         print("Initializing RAG Service...")
         # In-memory or local qdrant. We'll use the local docker one.
-        self.client = QdrantClient("localhost", port=6333)
+        self.client = QdrantClient("localhost", port=6335)
         self.collection_name = "knowledge_base"
         # FastEmbed model for generating local embeddings
         self.client.set_model("BAAI/bge-small-en-v1.5")
