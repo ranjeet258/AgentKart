@@ -5,7 +5,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     
     // Call the FastAPI Python backend
-    const response = await fetch('http://localhost:8000/api/v1/agent/chat', {
+    const aiApiUrl = process.env.NEXT_PUBLIC_AI_API_URL || 'http://localhost:8000';
+    const response = await fetch(`${aiApiUrl}/api/v1/agent/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

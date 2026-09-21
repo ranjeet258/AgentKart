@@ -11,7 +11,8 @@ export function SearchHeader({ onMatch }: { onMatch?: (agents: AgentProps[]) => 
     if (!requirement) return;
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/api/v1/requirements', {
+      const aiApiUrl = process.env.NEXT_PUBLIC_AI_API_URL || 'http://localhost:8000';
+      const res = await fetch(`${aiApiUrl}/api/v1/requirements`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-tenant-id': 'org_123' },
         body: JSON.stringify({ raw_text: requirement, tenant_id: 'org_123' })
