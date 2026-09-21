@@ -16,6 +16,8 @@
   </p>
 </div>
 
+![AgentKart Preview](./AgentKart.png)
+
 ---
 
 ## 📖 Overview

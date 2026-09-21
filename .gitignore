@@ -6,3 +6,6 @@ build/
 venv/
 __pycache__/
 AgentKart_Production_Ready_Implementation_Plan.pdf #
+
+# docker-compose up -d
+#
