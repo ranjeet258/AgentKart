@@ -30,6 +30,14 @@ class ChatRequest(BaseModel):
 def health_check():
     return {"status": "ok", "service": "ai-api"}
 
+@app.get("/")
+def root():
+    return {
+        "message": "AgentKart AI API is running on Vercel!",
+        "docs": "/docs",
+        "health": "/health"
+    }
+
 @app.post("/api/v1/agent/chat")
 async def agent_chat(req: ChatRequest):
     # Depending on agent_id, we can branch logic.
