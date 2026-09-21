@@ -1,3 +1,4 @@
+import os
 import asyncio
 from typing import List
 from qdrant_client import QdrantClient
@@ -6,12 +7,22 @@ from qdrant_client.models import VectorParams, Distance, PointStruct
 class RAGService:
     def __init__(self):
         print("Initializing RAG Service...")
-        # In-memory or local qdrant. We'll use the local docker one.
-        self.client = QdrantClient("localhost", port=6335)
-        self.collection_name = "knowledge_base"
-        # FastEmbed model for generating local embeddings
-        self.client.set_model("BAAI/bge-small-en-v1.5")
-        self._seed_kb()
+        qdrant_url = os.environ.get("QDRANT_URL", "http://localhost:6335")
+        qdrant_api_key = os.environ.get("QDRANT_API_KEY", None)
+        
+        try:
+            if "localhost" in qdrant_url and os.environ.get("VERCEL"):
+                self.client = QdrantClient(":memory:")
+            else:
+                self.client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
+                
+            self.collection_name = "knowledge_base"
+            # FastEmbed model for generating local embeddings
+            self.client.set_model("BAAI/bge-small-en-v1.5")
+            self._seed_kb()
+        except Exception as e:
+            print(f"Failed to initialize Qdrant in RAGService: {e}")
+            self.client = None
 
     def _seed_kb(self):
         if not self.client.collection_exists(self.collection_name):
@@ -40,6 +51,9 @@ class RAGService:
         """
         Takes user query, embeds it, finds closest document in Qdrant, and returns answer.
         """
+        if self.client is None:
+            return "I couldn't connect to my knowledge base. Please check Qdrant configuration."
+            
         # Use Qdrant's built-in fastembed query
         results = self.client.query(
             collection_name=self.collection_name,

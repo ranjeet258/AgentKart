@@ -1,6 +1,10 @@
+import os
 from pydantic import BaseModel
 from typing import List, Dict, Any
 from qdrant_client import QdrantClient
+
+# Ensure fastembed can download models on Vercel Serverless (read-only filesystem except /tmp)
+os.environ["FASTEMBED_CACHE_PATH"] = "/tmp/fastembed_cache"
 
 class AgentMatch(BaseModel):
     agent_id: str
@@ -10,23 +14,35 @@ class AgentMatch(BaseModel):
 class MatchingEngine:
     def __init__(self):
         print("Initializing Qdrant Matching Engine with FastEmbed...")
-        # Connect to local Qdrant container
-        self.qdrant = QdrantClient("http://localhost:6335")
-        self.collection_name = "agents"
+        qdrant_url = os.environ.get("QDRANT_URL", "http://localhost:6335")
+        qdrant_api_key = os.environ.get("QDRANT_API_KEY", None)
         
-        # Configure fastembed inside Qdrant (auto-downloads lightweight BAAI model)
-        self.qdrant.set_model("BAAI/bge-small-en-v1.5")
-        
-        # Ensure collection exists and is seeded
-        if not self.qdrant.collection_exists(self.collection_name):
-            print("Creating Qdrant collection and seeding agents...")
-            self.qdrant.create_collection(
-                collection_name=self.collection_name,
-                vectors_config=self.qdrant.get_fastembed_vector_params(),
-            )
-            self._seed_agents()
-        else:
-            print("Qdrant collection already exists.")
+        try:
+            # Connect to remote, local, or fallback to in-memory for serverless demos
+            if "localhost" in qdrant_url and os.environ.get("VERCEL"):
+                # If running on vercel without a remote Qdrant URL, use in-memory
+                self.qdrant = QdrantClient(":memory:")
+            else:
+                self.qdrant = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
+                
+            self.collection_name = "agents"
+            
+            # Configure fastembed inside Qdrant (auto-downloads lightweight BAAI model)
+            self.qdrant.set_model("BAAI/bge-small-en-v1.5")
+            
+            # Ensure collection exists and is seeded
+            if not self.qdrant.collection_exists(self.collection_name):
+                print("Creating Qdrant collection and seeding agents...")
+                self.qdrant.create_collection(
+                    collection_name=self.collection_name,
+                    vectors_config=self.qdrant.get_fastembed_vector_params(),
+                )
+                self._seed_agents()
+            else:
+                print("Qdrant collection already exists.")
+        except Exception as e:
+            print(f"Failed to initialize Qdrant in MatchingEngine: {e}")
+            self.qdrant = None
             
     def _seed_agents(self):
         """Seed Qdrant with our 3 first-party agents for vector search"""
@@ -80,6 +96,9 @@ class MatchingEngine:
         """
         Step 3: Qdrant candidate retrieval using FastEmbed
         """
+        if self.qdrant is None:
+            return []
+            
         hits = self.qdrant.query(
             collection_name=self.collection_name,
             query_text=text,
